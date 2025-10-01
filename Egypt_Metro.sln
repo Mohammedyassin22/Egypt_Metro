@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34309.116
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Egypt_Metro", "Egypt_Metro\Egypt_Metro.csproj", "{0B4FBB44-D625-4434-A982-62F936D21036}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0B4FBB44-D625-4434-A982-62F936D21036}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B4FBB44-D625-4434-A982-62F936D21036}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B4FBB44-D625-4434-A982-62F936D21036}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B4FBB44-D625-4434-A982-62F936D21036}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D6A245A8-4881-4FD1-B30F-1CD83C695C93}
+	EndGlobalSection
+EndGlobal

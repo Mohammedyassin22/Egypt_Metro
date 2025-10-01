@@ -1,0 +1,6 @@
+@Egypt_Metro_HostAddress = http://localhost:5100
+
+GET {{Egypt_Metro_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
