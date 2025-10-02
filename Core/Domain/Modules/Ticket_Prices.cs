@@ -9,6 +9,6 @@ namespace Domain.Modules
     public class Ticket_Prices:BaseEntity<int>
     {
         public int StationsNumber { get; set; }
-        public decimal Price { get; set; }
+        public int Price { get; set; }
     }
 }

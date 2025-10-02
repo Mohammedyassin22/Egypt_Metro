@@ -14,10 +14,11 @@ namespace Presistense.Data.Configuration
     {
         public void Configure(EntityTypeBuilder<Station_Name> builder)
         {
-            
-            builder.HasOne(s => s.Coordinates) 
-                   .WithOne(c => c.Station) 
+            builder.HasOne(s => s.Coordinates)
+                   .WithOne(c => c.Station)
+                   .HasForeignKey<Station_Coordinates>(c => c.StationId)
                    .OnDelete(DeleteBehavior.Cascade);
-        }
+        
+}
     }
 }

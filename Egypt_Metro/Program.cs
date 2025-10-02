@@ -1,9 +1,14 @@
+using Microsoft.EntityFrameworkCore;
+using Domain;
+using Presistense;
+using Presistense.Data;
+using System.Globalization;
 
 namespace Egypt_Metro
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +19,11 @@ namespace Egypt_Metro
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+
+            builder.Services.AddDbContext<MetroDbContex>(x => x.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            builder.Services.AddScoped<IDbInitializer, DbIntializer>();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -22,6 +32,10 @@ namespace Egypt_Metro
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            using var scope = app.Services.CreateScope();
+            var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
+            await dbInitializer.InitializeAsync();
 
             app.UseHttpsRedirection();
 
