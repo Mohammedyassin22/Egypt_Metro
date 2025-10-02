@@ -4,15 +4,15 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static System.Collections.Specialized.BitVector32;
 
 namespace Domain.Modules
 {
-    public class Stations_Lines:BaseEntity<int>
+    public class CongestionSchedule:BaseEntity<int>
     {
-        public Station_Name Station { get; set; }
         public int LineId { get; set; }
         public Line_Name Line { get; set; }
-        public int OrderInLine { get; set; }
+        public DateTime ObservationTime { get; set; }
+        public int CongestionLevel { get; set; }
+        public string Notes { get; set; }
     }
 }
