@@ -6,9 +6,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Modules
 {
-    public class Ticket_Prices:BaseEntity<int>
+    public class AssemplyRefernce
     {
-        public int StationsNumber { get; set; }
-        public decimal Price { get; set; }
     }
 }
