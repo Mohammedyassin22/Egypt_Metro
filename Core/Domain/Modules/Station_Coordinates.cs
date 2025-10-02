@@ -11,7 +11,9 @@ namespace Domain.Modules
     public class Station_Coordinates:BaseEntity<int>
     {
         public double Latitude { get; set; } 
-        public double Longitude { get; set; } 
+        public double Longitude { get; set; }
+
+        public int StationId { get; set; }
         public Station_Name Station { get; set; }
     }
 }
