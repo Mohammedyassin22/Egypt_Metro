@@ -3,6 +3,11 @@ using Domain;
 using Presistense;
 using Presistense.Data;
 using System.Globalization;
+using ServicesAbstraction;
+using Domain.Contracts;
+using AutoMapper;
+using Services.Profile;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Egypt_Metro
 {
@@ -20,8 +25,15 @@ namespace Egypt_Metro
             builder.Services.AddSwaggerGen();
 
 
-            builder.Services.AddDbContext<MetroDbContex>(x => x.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            builder.Services.AddAutoMapper(typeof(StationsNameServices).Assembly);
 
+
+            builder.Services.AddHttpClient();
+            builder.Services.AddScoped<IStationsNameServices, StationsNameServices>();
+
+            
+            builder.Services.AddDbContext<MetroDbContex>(x => x.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IDbInitializer, DbIntializer>();
 
             var app = builder.Build();

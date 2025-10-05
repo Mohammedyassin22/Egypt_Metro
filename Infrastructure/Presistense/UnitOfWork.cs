@@ -27,6 +27,11 @@ namespace Presistense
             return await metroDbContex.SaveChangesAsync();
         }
 
+        public async Task<int> SaveChangeAsync(CancellationToken cancellationToken = default)
+        {
+           return await metroDbContex.SaveChangesAsync(cancellationToken);
+        }
+
         private readonly ConcurrentDictionary<string, object> valuePairs = new(); 
     }
 }
