@@ -17,6 +17,8 @@ namespace Domain.Modules
     {
         public int LineId { get; set; }
         public Stations_Lines Line { get; set; }
+        public int Station_NameId { get; set; }
+        public Station_Name Station_Name { get; set; }
         public DateTime ObservationTime { get; set; } 
         public CongestionLevel congestionLevel { get; set; }
         public string Notes { get; set; }

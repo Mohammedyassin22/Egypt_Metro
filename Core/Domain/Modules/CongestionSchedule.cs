@@ -7,12 +7,18 @@ using System.Threading.Tasks;
 
 namespace Domain.Modules
 {
+    public enum CongestionLevels
+    {
+        Low = 1,
+        Medium = 2,
+        High = 3
+    }
     public class CongestionSchedule:BaseEntity<int>
     {
-        public int LineId { get; set; }
-        public Line_Name Line { get; set; }
+        public int StationName { get; set; }
+        public Station_Name Name { get; set; }
         public DateTime ObservationTime { get; set; }
-        public int CongestionLevel { get; set; }
+        public CongestionLevels congestionLevel { get; set; }
         public string Notes { get; set; }
     }
 }
