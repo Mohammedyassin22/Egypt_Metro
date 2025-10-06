@@ -13,8 +13,7 @@ namespace Presistense.Data.Configuration
     {
         public void Configure(EntityTypeBuilder<Faults> builder)
         {
-            builder.Property(f => f.Status)
-                .HasMaxLength(50);
+            
 
             builder.Property(f => f.EndTime)
                 .IsRequired(false);

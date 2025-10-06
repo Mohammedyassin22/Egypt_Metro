@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Domain.Contracts;
 using Domain.Modules;
-using Microsoft.IdentityModel.Abstractions;
 using ServicesAbstraction;
 using Shared;
 using System;

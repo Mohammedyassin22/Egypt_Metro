@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Runtime;
+using Domain.Modules;
+using Shared;
 
 namespace Services.Profile
 {
@@ -24,6 +26,11 @@ namespace Services.Profile
             CreateMap<Domain.Modules.Ticket_Prices, Shared.Ticket_PricesDto>()
                .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.Price))
                .ForMember(dest => dest.StationsNumber, opt => opt.MapFrom(src => src.StationsNumber));
+
+            CreateMap<Station_Coordinates, Station_CoordinatesDto>().ReverseMap();
+            CreateMap<Rush_Times, Rush_TimeDto>().ReverseMap();
+            CreateMap<Faults, FaultDto>().ReverseMap();
+            CreateMap<CongestionSchedule, CongestionScheduleDto>().ReverseMap();
         }
     }
 }

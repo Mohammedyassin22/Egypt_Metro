@@ -13,8 +13,7 @@ namespace Presistense.Data.Configuration
     {
         public void Configure(EntityTypeBuilder<CongestionSchedule> builder)
         {
-            builder.Property(c => c.LineId)
-                .IsRequired();
+           
 
             builder.Property(c => c.ObservationTime)
                 .IsRequired();

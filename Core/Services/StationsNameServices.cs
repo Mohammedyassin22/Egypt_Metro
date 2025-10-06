@@ -22,76 +22,59 @@ public class StationsNameServices : IStationsNameServices
         this.unitOfWork = unitOfWork;
        this.mapper = mapper;
         _httpClient = httpClient;
-        _googleApiKey = config["GoogleAPI:MapsApiKey"] ?? throw new ArgumentNullException("GoogleAPI:MapsApiKey");
-
+        if (!_httpClient.DefaultRequestHeaders.Contains("User-Agent"))
+        {
+            _httpClient.DefaultRequestHeaders.Add("User-Agent", "EgyptMetroApp/1.0 (contact: your-email@example.com)");
+        }
     }
+
         public async Task<Station_NameDto> AddStationWithCoordinatesAsync(string stationName, CancellationToken cancellationToken = default)
-    {
-        if (string.IsNullOrWhiteSpace(stationName))
-            throw new ArgumentException("stationName must be provided", nameof(stationName));
-
-        string addressQuery = Uri.EscapeDataString($"{stationName}, Cairo, Egypt");
-        string apiUrl = $"https://maps.googleapis.com/maps/api/geocode/json?address={addressQuery}&key={_googleApiKey}";
-
-        double lat, lng;
-
-        using var response = await _httpClient.GetAsync(apiUrl, cancellationToken);
-        if (!response.IsSuccessStatusCode)
-        {
-            var body = await response.Content.ReadAsStringAsync(cancellationToken);
-            throw new InvalidOperationException($"Google API returned {(int)response.StatusCode}: {body}");
-        }
-
-        var json = await response.Content.ReadAsStringAsync(cancellationToken);
-        using (var doc = JsonDocument.Parse(json))
-        {
-            if (!doc.RootElement.TryGetProperty("results", out var results) || results.GetArrayLength() == 0)
-                throw new InvalidOperationException($"Google API couldn't find coordinates for '{stationName}'");
-
-            var first = results[0];
-            if (!first.TryGetProperty("geometry", out var geom) ||
-                !geom.TryGetProperty("location", out var loc) ||
-                !loc.TryGetProperty("lat", out var latProp) ||
-                !loc.TryGetProperty("lng", out var lngProp))
             {
-                throw new InvalidOperationException("Unexpected Google API response shape.");
+            if (string.IsNullOrWhiteSpace(stationName))
+                throw new ArgumentException("stationName must be provided", nameof(stationName));
+
+            string addressQuery = Uri.EscapeDataString($"{stationName}, Cairo, Egypt");
+            string apiUrl = $"https://nominatim.openstreetmap.org/search?format=json&q={addressQuery}";
+
+            double lat, lng;
+
+            using var response = await _httpClient.GetAsync(apiUrl, cancellationToken);
+            if (!response.IsSuccessStatusCode)
+            {
+                var body = await response.Content.ReadAsStringAsync(cancellationToken);
+                throw new InvalidOperationException($"OpenStreetMap API returned {(int)response.StatusCode}: {body}");
             }
 
-            lat = latProp.GetDouble();
-            lng = lngProp.GetDouble();
-        }
-
-        var station = new Station_Name
-        {
-            StationName = stationName,
-            Coordinates = new Station_Coordinates
+            var json = await response.Content.ReadAsStringAsync(cancellationToken);
+            using (var doc = JsonDocument.Parse(json))
             {
-                Latitude = lat,
-                Longitude = lng
+                var results = doc.RootElement;
+                if (results.GetArrayLength() == 0)
+                    throw new InvalidOperationException($"Couldn't find coordinates for '{stationName}' using OpenStreetMap.");
+
+                var first = results[0];
+                lat = double.Parse(first.GetProperty("lat").GetString());
+                lng = double.Parse(first.GetProperty("lon").GetString());
             }
-        };
 
-        var stationRepo = unitOfWork.GetRepository<Station_Name, int>();
-        await stationRepo.AddAsync(station);
-        await unitOfWork.SaveChangeAsync(cancellationToken);
+            var station = new Station_Name
+            {
+                StationName = stationName,
+                Coordinates = new Station_Coordinates
+                {
+                    Latitude = lat,
+                    Longitude = lng
+                }
+            };
 
-        var dto = mapper.Map<Station_NameDto>(station);
-        return dto;
-    }
-        public async Task<Station_NameDto> AddTicketPriceAsync(Station_NameDto newname)
-        {
-            var priceEntity = mapper.Map<Station_Name>(newname);
+            var stationRepo = unitOfWork.GetRepository<Station_Name, int>();
+            await stationRepo.AddAsync(station);
+            await unitOfWork.SaveChangeAsync(cancellationToken);
 
-            var repository = unitOfWork.GetRepository<Station_Name, int>();
-
-            await repository.AddAsync(priceEntity);
-
-            await unitOfWork.SaveChangeAsync();
-
-            var resultDto = mapper.Map<Station_NameDto>(priceEntity);
-
-            return resultDto;
+            var dto = mapper.Map<Station_NameDto>(station);
+            return dto;
         }
+    
         public async Task<IEnumerable<Station_NameDto>> GetAllStationsAsync()
         {
             var stations = await unitOfWork .GetRepository<Station_Name,int>().GetAllAsync();

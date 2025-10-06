@@ -9,7 +9,7 @@ namespace ServicesAbstraction
 {
     public interface ITicketPricesServices
     {
-        Task<int?> GetPriceAsync(int numstations);
-        Task<Ticket_PricesDto> AddTicketPriceAsync(Ticket_PricesDto newPriceDto);
+        Task<IEnumerable<Ticket_PricesDto>> GetAllTicketPricesAsync();
+        Task<Ticket_PricesDto> AddTicketPriceAsync(int numStations, int price);
     }
 }

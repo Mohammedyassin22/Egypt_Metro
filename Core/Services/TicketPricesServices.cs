@@ -13,30 +13,32 @@ namespace Services
 {
     public class TicketPricesServices(IUnitOfWork unitOfWork, IMapper mapper) : ITicketPricesServices
     {
-        public async Task<Ticket_PricesDto> AddTicketPriceAsync(Ticket_PricesDto newPriceDto)
+
+        public async Task<Ticket_PricesDto> AddTicketPriceAsync(int numStations, int price)
         {
-            var priceEntity = mapper.Map<Ticket_Prices>(newPriceDto);
+            var priceEntity = new Ticket_Prices
+            {
+                StationsNumber = numStations,
+                Price = price
+            };
 
             var repository = unitOfWork.GetRepository<Ticket_Prices, int>();
-
             await repository.AddAsync(priceEntity);
 
             await unitOfWork.SaveChangeAsync();
 
             var resultDto = mapper.Map<Ticket_PricesDto>(priceEntity);
-
             return resultDto;
         }
-
-        public async Task<int?> GetPriceAsync(int numstations)
+        public async Task<IEnumerable<Ticket_PricesDto>> GetAllTicketPricesAsync()
         {
-            var price = await unitOfWork.GetRepository<Ticket_Prices, int>().GetAsync(numstations);
-            if(price is null)
-            {
-                return null;
-            }
-            var result = mapper.Map<Ticket_PricesDto>(price);
-            return result.Price;
+            var repository = unitOfWork.GetRepository<Ticket_Prices, int>();
+
+            var prices = await repository.GetAllAsync();
+
+            var result = mapper.Map<IEnumerable<Ticket_PricesDto>>(prices);
+            return result;
+        }
+
         }
     }
-}
