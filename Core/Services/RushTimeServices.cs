@@ -14,7 +14,7 @@ namespace Services
 {
     public class RushTimeServices(IMapper mapper, IUnitOfWork unitOfWork) : IRushTimeServices
     {
-           public async Task<Rush_TimeDto> AddRushTimeAsync(string stationName, string congestionLevel, string notes)
+           public async Task<Rush_TimeDto> AddRushTimeAsync(string stationName, string congestionLevel, string? notes)
         {
 
             var stationRepo = unitOfWork.GetRepository<Station_Name, int>();
@@ -67,6 +67,5 @@ namespace Services
                 return result;
             }
 
-        
     }
 }

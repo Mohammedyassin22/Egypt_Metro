@@ -12,7 +12,6 @@ namespace ServicesAbstraction
     {
         Task<string> GetStationNameAsync(string name);
         Task<IEnumerable<Station_NameDto>> GetAllStationsAsync();
-        Task<Station_NameDto> AddTicketPriceAsync(Station_NameDto newname);
         Task<Station_NameDto> AddStationWithCoordinatesAsync(string stationName, CancellationToken cancellationToken = default);
 
         }
