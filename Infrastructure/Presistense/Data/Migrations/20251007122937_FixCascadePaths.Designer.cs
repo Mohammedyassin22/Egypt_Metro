@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Presistense.Data;
 
@@ -11,9 +12,11 @@ using Presistense.Data;
 namespace Presistense.Data.Migrations
 {
     [DbContext(typeof(MetroDbContex))]
-    partial class MetroDbContexModelSnapshot : ModelSnapshot
+    [Migration("20251007122937_FixCascadePaths")]
+    partial class FixCascadePaths
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -55,7 +58,7 @@ namespace Presistense.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CongestionLevel")
+                    b.Property<int>("NameId")
                         .HasColumnType("int");
 
                     b.Property<string>("Notes")
@@ -68,9 +71,12 @@ namespace Presistense.Data.Migrations
                     b.Property<int>("StationNameId")
                         .HasColumnType("int");
 
+                    b.Property<int>("congestionLevel")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("StationNameId");
+                    b.HasIndex("NameId");
 
                     b.ToTable("CongestionSchedules");
                 });
@@ -259,13 +265,13 @@ namespace Presistense.Data.Migrations
 
             modelBuilder.Entity("Domain.Modules.CongestionSchedule", b =>
                 {
-                    b.HasOne("Domain.Modules.Station_Name", "StationName")
+                    b.HasOne("Domain.Modules.Station_Name", "Name")
                         .WithMany()
-                        .HasForeignKey("StationNameId")
+                        .HasForeignKey("NameId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("StationName");
+                    b.Navigation("Name");
                 });
 
             modelBuilder.Entity("Domain.Modules.Faults", b =>

@@ -10,8 +10,5 @@ namespace Shared
     {
         public string LineName { get; set; }
         public string ColorCode { get; set; }
-        public string StationsLines { get; set; }
-        public string CongestionSchedules { get; set; }
-        public string Faults { get; set; }
     }
 }

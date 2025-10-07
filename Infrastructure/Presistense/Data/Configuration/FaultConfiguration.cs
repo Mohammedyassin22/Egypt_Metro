@@ -13,10 +13,13 @@ namespace Presistense.Data.Configuration
     {
         public void Configure(EntityTypeBuilder<Faults> builder)
         {
-            
-
             builder.Property(f => f.EndTime)
-                .IsRequired(false);
+             .IsRequired(false);
+
+            builder.HasOne(f => f.Line)
+                   .WithMany(l => l.Faults)
+                   .HasForeignKey(f => f.LineId)
+                   .OnDelete(DeleteBehavior.NoAction);
 
         }
     }

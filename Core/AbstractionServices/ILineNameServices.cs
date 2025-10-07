@@ -12,5 +12,6 @@ namespace ServicesAbstraction
         Task<string> GetLineNameAsync(string name);
         Task<IEnumerable<Line_NameDto>> GetAllStationsAsync();
         Task<Line_NameDto> AddTicketPriceAsync(Line_NameDto newlineDto);
+        Task<Line_NameDto> DeleteAsync(int id);
     }
 }

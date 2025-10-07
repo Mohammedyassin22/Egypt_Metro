@@ -9,8 +9,9 @@ namespace ServicesAbstraction
 {
     public interface ICongestionScheduleService
     {
-        Task<CongestionScheduleDto> AddCongestionAsync(CongestionScheduleDto dto);
+        Task<CongestionScheduleDto> AddCongestionAsync(string Name,string level,string? notes);
         Task<IEnumerable<CongestionScheduleDto>> GetAllCongestionAsync();
+        Task<CongestionScheduleDto> DeleteAsync(int id);
     }
 
 }

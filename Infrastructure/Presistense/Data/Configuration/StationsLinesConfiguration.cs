@@ -13,18 +13,16 @@ namespace Presistense.Data.Configuration
     {
         public void Configure(EntityTypeBuilder<Stations_Lines> builder)
         {
-            builder.HasKey(sl => new { sl.Station, sl.LineId });
-
             builder.HasOne(sl => sl.Station)
-                .WithMany(s => s.StationsLines)
-                .HasForeignKey(sl => sl.Station);
+               .WithMany(s => s.StationsLines)
+               .HasForeignKey(sl => sl.StationNameId)
+               .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne(sl => sl.Line)
-                .WithMany(l => l.StationsLines)
-                .HasForeignKey(sl => sl.LineId);
+                   .WithMany(l => l.StationsLines)
+                   .HasForeignKey(sl => sl.LineId)
+                   .OnDelete(DeleteBehavior.NoAction);
 
-            builder.Property(sl => sl.OrderInLine)
-                .IsRequired();
         }
     }
         

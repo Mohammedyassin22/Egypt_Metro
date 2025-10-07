@@ -17,6 +17,10 @@ namespace Presistense.Data
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(AssemplyRefernce).Assembly);
             base.OnModelCreating(modelBuilder);
+            foreach (var foreignKey in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
+            {
+                foreignKey.DeleteBehavior = DeleteBehavior.Restrict; 
+            }
         }
 
         public DbSet<Ticket_Prices> Ticket_Prices { get; set; }
@@ -27,7 +31,6 @@ namespace Presistense.Data
         public DbSet<Chatbot> chatbots { get; set; }
         public DbSet<Faults> Faults { get; set; }
         public DbSet<Rush_Times> Rush_Times { get; set;}
-
-
+        public DbSet<CongestionSchedule> CongestionSchedules { get; set; }
     }
 }

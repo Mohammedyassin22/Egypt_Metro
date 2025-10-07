@@ -8,7 +8,7 @@ namespace Shared
 {
     public class FaultDto
     {
-        public int LineId { get; set; }
+        public string LineName { get; set; }
         public string Title { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime? EndTime { get; set; }

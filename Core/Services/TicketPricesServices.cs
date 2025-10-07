@@ -40,5 +40,23 @@ namespace Services
             return result;
         }
 
-        }
+          public async Task<Ticket_PricesDto> UpdateAsync(int numStations, int newPrice)
+            {
+                var ticketRepo = unitOfWork.GetRepository<Ticket_Prices, int>();
+
+                var ticketEntity = await ticketRepo.GetByConditionAsync(t => t.StationsNumber == numStations);
+
+                if (ticketEntity == null)
+                    throw new KeyNotFoundException($"No ticket price found for {numStations} stations.");
+
+                ticketEntity.Price = newPrice;
+
+                await unitOfWork.SaveChangeAsync();
+
+                var result = mapper.Map<Ticket_PricesDto>(ticketEntity);
+                return result;
+            }
+
+        
+    }
     }

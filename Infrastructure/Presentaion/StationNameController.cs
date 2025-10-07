@@ -36,28 +36,32 @@ namespace Presentaion
         {
             try
             {
-                var station = await serivcesManager.StationNameServices.GetStationNameAsync(stationName);
-                if (station == null)
-                    return NotFound();
-
+                var station = await serivcesManager.StationNameServices.AddStationWithCoordinatesAsync(stationName);
                 return Ok(station);
             }
-            catch (InvalidOperationException ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
         }
 
-   //     [HttpPost("AddTicketPrices")]
-      /*  public async Task<IActionResult> AddTicketPriceAsync([FromBody] Station_NameDto newname)
+        [HttpDelete("DeleteStationName/{id}")]
+        public async Task<IActionResult> DeleteStationNameAsync(int id)
         {
-            var result = await serivcesManager.StationNameServices.AddTicketPriceAsync(newname);
-            if(result is null)
+            try
             {
-                return BadRequest();
+                var result = await serivcesManager.StationNameServices.DeleteAsync(id);
+
+                if (result is null)
+                    return NotFound($"Station name with ID {id} not found.");
+
+                return Ok(result);
             }
-            return Ok(result);
-        }*/
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal Server Error: {ex.Message}");
+            }
+        }
 
     }
 }

@@ -26,17 +26,34 @@ namespace Presentaion
             try
             {
                 var result = await serivcesManager.FaultService.AddFaultAsync(faultDto);
-                if(result is null)
+                if (result is null)
                 {
-                    return BadRequest();
+                    return BadRequest("Fault could not be added.");
                 }
                 return Ok(result);
             }
-            catch (InvalidOperationException ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
         }
 
+        [HttpDelete("DeleteFault/{id}")]
+        public async Task<IActionResult> DeleteFaultAsync(int id)
+        {
+            try
+            {
+                var result = await serivcesManager.FaultService.DeleteAsync(id);
+                if (result is null)
+                {
+                    return NotFound($"Fault with ID {id} not found.");
+                }
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal Server Error: {ex.Message}");
+            }
+        }
     }
 }

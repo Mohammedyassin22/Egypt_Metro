@@ -20,22 +20,45 @@ namespace Presentaion
             return Ok(schedules);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AddCongestionScheduleAsync(CongestionScheduleDto dto)
+        [HttpPost("AddCongestionSchedule")]
+        public async Task<IActionResult> AddCongestionScheduleAsync(string name, string level, string? notes)
         {
             try
             {
-                var result = await serivcesManager.CongestionScheduleService.AddCongestionAsync(dto);
-                if(result is null)
-                {
-                    return BadRequest();
-                }
+                var result = await serivcesManager.CongestionScheduleService.AddCongestionAsync(name, level, notes);
+
+                if (result is null)
+                    return BadRequest("Failed to add congestion schedule.");
+
                 return Ok(result);
             }
             catch (InvalidOperationException ex)
             {
                 return BadRequest(ex.Message);
             }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal Server Error: {ex.Message}");
+            }
         }
+
+        [HttpDelete("DeleteCongestionSchedule/{id}")]
+        public async Task<IActionResult> DeleteCongestionScheduleAsync(int id)
+        {
+            try
+            {
+                var result = await serivcesManager.CongestionScheduleService.DeleteAsync(id);
+
+                if (result is null)
+                    return NotFound($"Congestion schedule with ID {id} not found.");
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal Server Error: {ex.Message}");
+            }
+        }
+
     }
 }

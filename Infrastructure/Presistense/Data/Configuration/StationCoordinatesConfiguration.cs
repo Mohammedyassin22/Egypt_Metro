@@ -13,13 +13,16 @@ namespace Presistense.Data.Configuration
     {
         public void Configure(EntityTypeBuilder<Station_Coordinates> builder)
         {
-            builder.HasKey(c => c.Station);
+            builder.HasKey(c => c.Id);
 
-            builder.Property(c => c.Latitude)
-                .IsRequired();
+            builder.Property(c => c.Latitude).IsRequired();
+            builder.Property(c => c.Longitude).IsRequired();
 
-            builder.Property(c => c.Longitude)
-                .IsRequired();
+            builder.HasOne(c => c.Station)
+                   .WithOne(s => s.Coordinates)
+                   .HasForeignKey<Station_Coordinates>(c => c.StationId)
+                   .OnDelete(DeleteBehavior.NoAction);
+
         }
     }
 }

@@ -12,6 +12,7 @@ namespace ServicesAbstraction
     {
         Task<IEnumerable<Rush_TimeDto>> GetRushAllAsync();
         Task<Rush_TimeDto> GetRushByNameAsync(string namestation);
-        Task<Rush_TimeDto> AddRushTimeAsync(string stationName,string congestionLevel,string? notes);
+        Task<Rush_TimeDto> AddRushTimeAsync(Rush_TimeDto dto);
+        Task<Rush_TimeDto> DeleteAsync(int id);
     }
 }

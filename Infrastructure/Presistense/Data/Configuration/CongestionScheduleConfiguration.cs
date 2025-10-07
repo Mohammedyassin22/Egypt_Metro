@@ -13,10 +13,11 @@ namespace Presistense.Data.Configuration
     {
         public void Configure(EntityTypeBuilder<CongestionSchedule> builder)
         {
-           
+            builder.HasOne(c => c.StationName)
+                  .WithMany()
+                  .HasForeignKey(c => c.StationNameId)
+                  .OnDelete(DeleteBehavior.NoAction);
 
-            builder.Property(c => c.ObservationTime)
-                .IsRequired();
         }
     }
 }

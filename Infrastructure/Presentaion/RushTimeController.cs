@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ServicesAbstraction;
+using Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,11 +21,11 @@ namespace Presentaion
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddRushTimeAsync([FromBody] string startTime, string endTime,string? notes)
+        public async Task<IActionResult> AddRushTimeAsync(Rush_TimeDto dto)
         {
             try
             {
-                var result = await serivcesManager.RushTimeServices.AddRushTimeAsync(startTime, endTime,notes);
+                var result = await serivcesManager.RushTimeServices.AddRushTimeAsync(dto);
                 if(result is null)
                 {
                     return BadRequest();
@@ -46,6 +47,24 @@ namespace Presentaion
                 return NotFound();   
             }
             return Ok(result);
+        }
+
+        [HttpDelete("DeleteRushTime/{id}")]
+        public async Task<IActionResult> DeleteRushTimeAsync(int id)
+        {
+            try
+            {
+                var result = await serivcesManager.RushTimeServices.DeleteAsync(id);
+
+                if (result is null)
+                    return NotFound($"Rush time with ID {id} not found.");
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal Server Error: {ex.Message}");
+            }
         }
     }
 }
