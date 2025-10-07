@@ -74,14 +74,37 @@ public class StationsNameServices : IStationsNameServices
             var dto = mapper.Map<Station_NameDto>(station);
             return dto;
         }
-    
-        public async Task<IEnumerable<Station_NameDto>> GetAllStationsAsync()
+
+         public async Task<Station_NameDto> DeleteAsync(int id)
+    {
+        var faultrepo = unitOfWork.GetRepository<Station_Name, int>();
+        var faultEntity = await faultrepo.GetAsync(id);
+        if (faultEntity == null)
+            throw new KeyNotFoundException($"No fault found with ID {id}.");
+        faultrepo.Delete(faultEntity);
+        await unitOfWork.SaveChangeAsync();
+        var resultDto = mapper.Map<Station_NameDto>(faultEntity);
+        return resultDto;
+    }
+
+         public async Task<IEnumerable<Station_NameDto>> GetAllStationsAsync()
+    {
+        var stations = await unitOfWork.GetRepository<Station_Name, int>().GetAllAsync();
+
+        if (stations == null || !stations.Any())
+            return Enumerable.Empty<Station_NameDto>();
+
+        var result = stations.Select(s => new Station_NameDto
         {
-            var stations = await unitOfWork .GetRepository<Station_Name,int>().GetAllAsync();
-            var result = mapper.Map<IEnumerable<Station_Name>, IEnumerable<Station_NameDto>>(stations);
-            return result;
-        }
-        public async Task<string> GetStationNameAsync(string name)
+            StationName = s.StationName,
+            StationsLines = null,      
+            Coordinates = null         
+        });
+
+        return result;
+    }
+
+         public async Task<string> GetStationNameAsync(string name)
         {
             var station = await unitOfWork.GetRepository<Station_Name, int>().GetByConditionAsync(x=>x.StationName==name);
             if (station is null)

@@ -12,5 +12,6 @@ namespace Domain.Contracts
         Task <int> SaveChangeAsync();
         Task<int> SaveChangeAsync(CancellationToken cancellationToken = default);
         IGenericRebository<TEntity, TKey> GetRepository<TEntity, TKey>() where TEntity : BaseEntity<TKey>;
+
     }
 }

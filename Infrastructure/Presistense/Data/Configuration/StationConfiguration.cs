@@ -15,10 +15,20 @@ namespace Presistense.Data.Configuration
         public void Configure(EntityTypeBuilder<Station_Name> builder)
         {
             builder.HasOne(s => s.Coordinates)
-                   .WithOne(c => c.Station)
-                   .HasForeignKey<Station_Coordinates>(c => c.StationId)
-                   .OnDelete(DeleteBehavior.Cascade);
-        
-}
+              .WithOne(c => c.Station)
+              .HasForeignKey<Station_Coordinates>(c => c.StationId)
+              .OnDelete(DeleteBehavior.Restrict); // ✅
+
+            builder.HasMany(s => s.StationsLines)
+                   .WithOne(sl => sl.Station)
+                   .HasForeignKey(sl => sl.StationNameId)
+                   .OnDelete(DeleteBehavior.Restrict); // ✅
+
+            builder.Property(s => s.StationName)
+                   .IsRequired()
+                   .HasMaxLength(100);
+
+
+        }
     }
 }

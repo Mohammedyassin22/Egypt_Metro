@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ServicesAbstraction;
+using Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,21 +32,38 @@ namespace Presentaion
         }
 
         [HttpPost("AddLineName")]
-        public async Task<IActionResult> AddLineNameAsync([FromBody] string lineName)
+        public async Task<IActionResult> AddLineNameAsync([FromBody] Line_NameDto newlineDto)
         {
+            if (newlineDto == null)
+                return BadRequest("Line data is required");
+
             try
             {
-                var line = await serivcesManager.LineNameServices.GetLineNameAsync(lineName);
-                if (line == null)
-                    return NotFound();
-
-                return Ok(line);
+                var result = await serivcesManager.LineNameServices.AddTicketPriceAsync(newlineDto);
+                return Ok(result);
             }
-            catch (InvalidOperationException ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
         }
-        
+
+        [HttpDelete("DeleteLineName/{id}")]
+        public async Task<IActionResult> DeleteLineNameAsync(int id)
+        {
+            try
+            {
+                var result = await serivcesManager.LineNameServices.DeleteAsync(id);
+
+                if (result is null)
+                    return NotFound($"Line name with ID {id} not found.");
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal Server Error: {ex.Message}");
+            }
+        }
     }
 }

@@ -11,5 +11,6 @@ namespace ServicesAbstraction
     {
         Task<IEnumerable<Ticket_PricesDto>> GetAllTicketPricesAsync();
         Task<Ticket_PricesDto> AddTicketPriceAsync(int numStations, int price);
+        Task<Ticket_PricesDto> UpdateAsync(int numStations, int newPrice);
     }
 }

@@ -15,16 +15,29 @@ namespace Services
     {
         public async Task<Line_NameDto> AddTicketPriceAsync(Line_NameDto newlineDto)
         {
-            var priceEntity = mapper.Map<Line_Name>(newlineDto);
+            if (newlineDto == null)
+                throw new ArgumentNullException(nameof(newlineDto));
+            
+            var lineEntity = mapper.Map<Line_Name>(newlineDto);
 
             var repository = unitOfWork.GetRepository<Line_Name, int>();
 
-            await repository.AddAsync(priceEntity);
-
+            await repository.AddAsync(lineEntity);
             await unitOfWork.SaveChangeAsync();
 
-            var resultDto = mapper.Map<Line_NameDto>(priceEntity);
+            var resultDto = mapper.Map<Line_NameDto>(lineEntity);
+            return resultDto;
+        }
 
+        public async Task<Line_NameDto> DeleteAsync(int id)
+        {
+            var faultrepo = unitOfWork.GetRepository<Line_Name, int>();
+            var faultEntity = await faultrepo.GetAsync(id);
+            if (faultEntity == null)
+                throw new KeyNotFoundException($"No fault found with ID {id}.");
+            faultrepo.Delete(faultEntity);
+            await unitOfWork.SaveChangeAsync();
+            var resultDto = mapper.Map<Line_NameDto>(faultEntity);
             return resultDto;
         }
 

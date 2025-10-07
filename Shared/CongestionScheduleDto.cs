@@ -8,7 +8,7 @@ namespace Shared
 {
     public class CongestionScheduleDto
     {
-        public int StationNameId { get; set; }  
+        public string StationName { get; set; }  
         public string congestionLevel { get; set; } 
         public string Notes { get; set; }
     }

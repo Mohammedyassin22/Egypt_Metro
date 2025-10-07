@@ -8,28 +8,32 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Collections.Specialized.BitVector32;
 
 namespace Services
 {
     public class CongestionScheduleService(IMapper mapper, IUnitOfWork unitOfWork) : ICongestionScheduleService
     {
-        public async Task<CongestionScheduleDto> AddCongestionAsync(CongestionScheduleDto dto)
+        public async Task<CongestionScheduleDto> AddCongestionAsync(string name, string level, string? notes)
         {
             var stationRepo = unitOfWork.GetRepository<Station_Name, int>();
-            var station = await stationRepo.GetAsync(dto.StationNameId);
+
+            var stations = await stationRepo.GetAllAsync();
+            var station = stations.FirstOrDefault(s => s.StationName == name);
 
             if (station == null)
-                throw new Exception($"Station with ID {dto.StationNameId} not found.");
+                throw new Exception($"Station with name '{name}' not found.");
 
-            if (!Enum.TryParse<CongestionLevels>(dto.congestionLevel, true, out var parsedLevel))
-                throw new ArgumentException($"Invalid congestion level '{dto.congestionLevel}'. Use: Low, Medium, or High.");
+            // نحاول نحول level إلى enum
+            if (!Enum.TryParse<CongestionLevels>(level, true, out var parsedLevel))
+                throw new ArgumentException($"Invalid congestion level '{level}'. Use: Low, Medium, or High.");
 
             var congestionEntity = new CongestionSchedule
             {
-                StationName = station.Id,
-                ObservationTime = DateTime.Now,
-                congestionLevel = parsedLevel,
-                Notes = dto.Notes
+                StationNameId = station.Id,       
+                ObservationTime = DateTime.Now, 
+                CongestionLevel = parsedLevel,  
+                Notes = notes                   
             };
 
             var congestionRepo = unitOfWork.GetRepository<CongestionSchedule, int>();
@@ -37,21 +41,42 @@ namespace Services
             await unitOfWork.SaveChangeAsync();
 
             var result = mapper.Map<CongestionScheduleDto>(congestionEntity);
-            result.StationNameId = station.Id;
+            result.StationName = station.StationName; 
 
             return result;
         }
 
-        public Task<IEnumerable<CongestionScheduleDto>> GetAllCongestionAsync()
+        public async Task<IEnumerable<CongestionScheduleDto>> GetAllCongestionAsync()
         {
-            var congestionRepo = unitOfWork.GetRepository<CongestionSchedule, int>().GetAllAsync();
-            if (congestionRepo is null)
-            {
-                return null;
-            }
-            var result = mapper.Map<IEnumerable<CongestionScheduleDto>>(congestionRepo);
-            return Task.FromResult(result);
+            var congestionRepo = await unitOfWork.GetRepository<CongestionSchedule, int>().GetAllAsync();
 
+            var stations = await unitOfWork.GetRepository<Station_Name, int>().GetAllAsync();
+
+            var result = congestionRepo.Select(cs => new CongestionScheduleDto
+            {
+                StationName = stations.FirstOrDefault(s => s.Id == cs.StationNameId)?.StationName,
+                congestionLevel = cs.CongestionLevel.ToString(), // هنا اتحولت string
+                Notes = cs.Notes
+            });
+            return result;
         }
+
+        public async Task<CongestionScheduleDto> DeleteAsync(int id)
+        {
+            var scheduleRepo = unitOfWork.GetRepository<CongestionSchedule, int>();
+
+            var scheduleEntity = await scheduleRepo.GetAsync(id);
+
+            if (scheduleEntity == null)
+                throw new KeyNotFoundException($"No congestion schedule found with Id {id}.");
+
+            scheduleRepo.Delete(scheduleEntity);
+
+            await unitOfWork.SaveChangeAsync();
+
+            var result = mapper.Map<CongestionScheduleDto>(scheduleEntity);
+            return result;
+        }
+
     }
 }

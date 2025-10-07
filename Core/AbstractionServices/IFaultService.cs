@@ -11,6 +11,7 @@ namespace ServicesAbstraction
     {
         Task<FaultDto> AddFaultAsync(FaultDto dto);
         Task<IEnumerable<FaultDto>> GetAllFaultsAsync();
+        Task<FaultDto> DeleteAsync(int id);
     }
 
 }
