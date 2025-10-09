@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Domain.Contracts;
 using Domain.Modules;
+using Services.Specifcation;
 using ServicesAbstraction;
 using Shared;
 using System;
@@ -43,7 +44,8 @@ namespace Services
 
         public async Task<IEnumerable<Line_NameDto>> GetAllStationsAsync()
         {
-            var line = await unitOfWork.GetRepository<Line_Name,int>().GetAllAsync();
+            var spec = new LineNameSpecification();
+            var line = await unitOfWork.GetRepository<Line_Name,int>().GetAllAsync(spec);
             var result=mapper.Map<IEnumerable<Line_NameDto>>(line);
             return result;
         }

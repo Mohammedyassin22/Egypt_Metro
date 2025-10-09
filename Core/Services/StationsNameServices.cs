@@ -9,6 +9,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using Services.Specifcation;
 
 public class StationsNameServices : IStationsNameServices
 {
@@ -89,7 +90,8 @@ public class StationsNameServices : IStationsNameServices
 
          public async Task<IEnumerable<Station_NameDto>> GetAllStationsAsync()
     {
-        var stations = await unitOfWork.GetRepository<Station_Name, int>().GetAllAsync();
+        var spec= new StationNameSpecification();
+        var stations = await unitOfWork.GetRepository<Station_Name, int>().GetAllAsync(spec);
 
         if (stations == null || !stations.Any())
             return Enumerable.Empty<Station_NameDto>();

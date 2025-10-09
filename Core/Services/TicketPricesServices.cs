@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Domain.Contracts;
 using Domain.Modules;
+using Services.Specifcation;
 using ServicesAbstraction;
 using Shared;
 using System;
@@ -32,9 +33,10 @@ namespace Services
         }
         public async Task<IEnumerable<Ticket_PricesDto>> GetAllTicketPricesAsync()
         {
+            var spec = new StationSpecification();
             var repository = unitOfWork.GetRepository<Ticket_Prices, int>();
 
-            var prices = await repository.GetAllAsync();
+            var prices = await repository.GetAllAsync(spec);
 
             var result = mapper.Map<IEnumerable<Ticket_PricesDto>>(prices);
             return result;

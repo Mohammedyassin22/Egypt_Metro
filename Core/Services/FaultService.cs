@@ -3,6 +3,7 @@ using Domain.Contracts;
 using Domain.Modules;
 using Microsoft.AspNetCore.SignalR;
 using Services.Hubs;
+using Services.Specifcation;
 using ServicesAbstraction;
 using ServicesAbstraction.Twilio;
 using Shared;
@@ -18,9 +19,10 @@ namespace Services
     {
         public async Task<FaultDto> AddFaultAsync(FaultDto dto)
         {
+            var spec = new LineNameSpecification(dto.LineName);
+
             var lineRepo = unitOfWork.GetRepository<Line_Name, int>();
-            var line = (await lineRepo.GetAllAsync())
-                       .FirstOrDefault(l => l.LineName == dto.LineName);
+            var line = (await lineRepo.GetAllAsync(spec)).FirstOrDefault();
 
             if (line == null)
                 throw new InvalidOperationException($"Line '{dto.LineName}' not found.");
@@ -53,16 +55,16 @@ namespace Services
 
         public async Task<IEnumerable<FaultDto>> GetAllFaultsAsync()
         {
-            var faults = await unitOfWork.GetRepository<Faults, int>().GetAllAsync();
+            var spec = new FaultsSpecification();
+            var faultRepo = unitOfWork.GetRepository<Faults, int>();
+            var faults = await faultRepo.GetAllAsync(spec);
 
             if (faults == null || !faults.Any())
                 return Enumerable.Empty<FaultDto>();
 
-            var lines = await unitOfWork.GetRepository<Line_Name, int>().GetAllAsync();
-
             var result = faults.Select(f => new FaultDto
             {
-                LineName = lines.FirstOrDefault(l => l.Id == f.LineId)?.LineName,
+                LineName = f.Line?.LineName, // بفضل الـ Include بقت موجودة هنا
                 Title = f.Title,
                 StartTime = f.StartTime,
                 EndTime = f.EndTime,
@@ -71,6 +73,7 @@ namespace Services
 
             return result;
         }
+
 
         public async Task<FaultDto> DeleteAsync(int id)
         {
