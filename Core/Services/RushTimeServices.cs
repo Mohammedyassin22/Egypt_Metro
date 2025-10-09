@@ -2,6 +2,7 @@
 using Domain.Contracts;
 using Domain.Exception;
 using Domain.Modules;
+using Services.Specifcation;
 using ServicesAbstraction;
 using Shared;
 using System;
@@ -91,7 +92,8 @@ namespace Services
 
         public async Task<IEnumerable<Rush_TimeDto>> GetRushAllAsync()
         {
-            var rushTimes = await unitOfWork.GetRepository<Rush_Times,int>().GetAllAsync();
+            var spec = new RushTimeSepcification();
+            var rushTimes = await unitOfWork.GetRepository<Rush_Times,int>().GetAllAsync(spec);
             var result= mapper.Map<IEnumerable<Rush_TimeDto>>(rushTimes);
             return result;
         }

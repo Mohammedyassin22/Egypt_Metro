@@ -23,12 +23,21 @@ namespace Presistense.Rebository
             metroDbContex.Remove(entity);
         }
 
-        public async Task<IEnumerable<TEntity>> GetAllAsync(bool trackchange = false)
+        public async Task<IEnumerable<TEntity>> GetAllAsync(ISpecification<TEntity, TKey> specification, bool trackchange = false)
         {
-            if(trackchange)
-                return await metroDbContex.Set<TEntity>().ToListAsync();
-            return await metroDbContex.Set<TEntity>().AsNoTracking().ToListAsync();
+            IQueryable<TEntity> query;
+
+            if (trackchange)
+                query = metroDbContex.Set<TEntity>();
+            else
+                query = metroDbContex.Set<TEntity>().AsNoTracking();
+
+            if (specification is not null)
+                query = ApplicationsException(specification);
+
+            return await query.ToListAsync();
         }
+
 
         public async Task<TEntity?> GetAsync(TKey id)
         {
@@ -43,6 +52,11 @@ namespace Presistense.Rebository
         public void Update(TEntity entity)
         {
             metroDbContex.Update(entity);
+        }
+
+        private IQueryable<TEntity> ApplicationsException(ISpecification<TEntity, TKey> spec)
+        {
+            return SpecificationEvalutor.GetQuery(metroDbContex.Set<TEntity>(), spec);
         }
     }
 }

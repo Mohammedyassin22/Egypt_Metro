@@ -3,6 +3,7 @@ using Domain.Contracts;
 using Domain.Modules;
 using Microsoft.AspNetCore.SignalR;
 using Services.Hubs;
+using Services.Specifcation;
 using ServicesAbstraction;
 using ServicesAbstraction.Twilio;
 using Shared;
@@ -20,9 +21,10 @@ namespace Services
         public async Task<CongestionScheduleDto> AddCongestionAsync(string name, string level, string? notes)
         {
             var stationRepo = unitOfWork.GetRepository<Station_Name, int>();
+            var spec = new StationNameSpecification(name);
 
-            var stations = await stationRepo.GetAllAsync();
-            var station = stations.FirstOrDefault(s => s.StationName == name);
+            var stations = await stationRepo.GetAllAsync(spec);
+            var station = stations.FirstOrDefault();
 
             if (station == null)
                 throw new Exception($"Station with name '{name}' not found.");
@@ -64,9 +66,10 @@ namespace Services
 
         public async Task<IEnumerable<CongestionScheduleDto>> GetAllCongestionAsync()
         {
-            var congestionRepo = await unitOfWork.GetRepository<CongestionSchedule, int>().GetAllAsync();
-
-            var stations = await unitOfWork.GetRepository<Station_Name, int>().GetAllAsync();
+            var spec=new CongestionScheduleSpecification();
+            var congestionRepo = await unitOfWork.GetRepository<CongestionSchedule, int>().GetAllAsync(spec);
+            var specstation = new StationNameSpecification();
+            var stations = await unitOfWork.GetRepository<Station_Name, int>().GetAllAsync(specstation);
 
             var result = congestionRepo.Select(cs => new CongestionScheduleDto
             {
