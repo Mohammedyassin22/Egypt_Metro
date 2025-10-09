@@ -1,4 +1,5 @@
 ﻿using Domain.Modules;
+using Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +22,8 @@ namespace Services.Specifcation
             ApplyIncludes();
         }
 
-        public StationNameSpecification() : base(null)
+        public StationNameSpecification(StationNameSpecificationParameter parameter): 
+            base(x => (string.IsNullOrEmpty(parameter.Search) || x.StationName.ToLower().Contains(parameter.Search.ToLower())))
         {
             ApplyIncludes();
         }
