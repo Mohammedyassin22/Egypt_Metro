@@ -11,7 +11,7 @@ namespace ServicesAbstraction
     public interface IStationsNameServices
     {
         Task<string> GetStationNameAsync(string name);
-        Task<IEnumerable<Station_NameDto>> GetAllStationsAsync();
+        Task<IEnumerable<Station_NameDto>> GetAllStationsAsync(string? LineName);
         Task<Station_NameDto> AddStationWithCoordinatesAsync(string stationName, CancellationToken cancellationToken = default);
         Task<Station_NameDto> DeleteAsync(int id);
 

@@ -14,9 +14,9 @@ namespace Presentaion
     public class StationNameController(ISerivcesManager serivcesManager):ControllerBase
     {
         [HttpGet("GetAllStationsName")]
-        public async Task<IActionResult> GetAllStationsAsync()
+        public async Task<IActionResult> GetAllStationsAsync(string? LineName=null)
         {
-            var stations= await serivcesManager.StationNameServices.GetAllStationsAsync();
+            var stations= await serivcesManager.StationNameServices.GetAllStationsAsync(LineName);
             return Ok(stations);
         }
 
