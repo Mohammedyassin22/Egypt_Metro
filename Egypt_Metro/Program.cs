@@ -8,7 +8,11 @@ using Domain.Contracts;
 using Services.Profile;
 using Services;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.SignalR;
 using AutoMapper;
+using Services.Twilio;
+using ServicesAbstraction.Twilio;
+using Services.Hubs;
 
 namespace Egypt_Metro
 {
@@ -28,7 +32,14 @@ namespace Egypt_Metro
 
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+            builder.Services.Configure<TwilioSetting>(
+              builder.Configuration.GetSection("Twilio")
+);
+            builder.Services.AddSignalR();
+            
 
+
+            builder.Services.AddScoped<ISmsService, TwilioServices>();
 
             builder.Services.AddHttpClient();
             builder.Services.AddScoped<IStationsNameServices, StationsNameServices>();
@@ -51,6 +62,8 @@ namespace Egypt_Metro
             using var scope = app.Services.CreateScope();
             var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
             await dbInitializer.InitializeAsync();
+
+            app.MapHub<NotificationHub>("/notificationHub");
 
             app.UseHttpsRedirection();
 

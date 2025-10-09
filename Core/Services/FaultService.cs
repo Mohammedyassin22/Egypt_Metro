@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
 using Domain.Contracts;
 using Domain.Modules;
+using Microsoft.AspNetCore.SignalR;
+using Services.Hubs;
 using ServicesAbstraction;
+using ServicesAbstraction.Twilio;
 using Shared;
 using System;
 using System.Collections.Generic;
@@ -11,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Services
 {
-    public class FaultService(IMapper mapper, IUnitOfWork unitOfWork) : IFaultService
+    public class FaultService(IMapper mapper, IUnitOfWork unitOfWork, IHubContext<NotificationHub> hubContext,ISmsService smsService /*IRepository<AppUser, int> _userRepository*/) : IFaultService
     {
         public async Task<FaultDto> AddFaultAsync(FaultDto dto)
         {
@@ -32,6 +35,19 @@ namespace Services
             var resultDto = mapper.Map<FaultDto>(faultEntity);
             resultDto.LineName = dto.LineName;
 
+            // =============================
+            await hubContext.Clients.All.SendAsync("ReceiveMessage", $"🚨 عطل جديد على خط {dto.LineName}: {dto.Description}");
+
+            //var users = await _userRepository.GetAllAsync();
+            //foreach (var user in users)
+            //{
+            //    if (!string.IsNullOrEmpty(user.PhoneNumber))
+            //    {
+            //        await smsService.SendSmsAsync(
+            //            user.PhoneNumber,
+            //            $"🚨 تم تسجيل عطل جديد على خط {dto.LineName}: {dto.Description}"
+            //        );
+            //    }}
             return resultDto;
         }
 
