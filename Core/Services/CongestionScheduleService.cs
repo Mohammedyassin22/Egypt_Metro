@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
 using Domain.Contracts;
 using Domain.Modules;
+using Microsoft.AspNetCore.SignalR;
+using Services.Hubs;
 using ServicesAbstraction;
+using ServicesAbstraction.Twilio;
 using Shared;
 using System;
 using System.Collections.Generic;
@@ -12,7 +15,7 @@ using static System.Collections.Specialized.BitVector32;
 
 namespace Services
 {
-    public class CongestionScheduleService(IMapper mapper, IUnitOfWork unitOfWork) : ICongestionScheduleService
+    public class CongestionScheduleService(IMapper mapper, IUnitOfWork unitOfWork, IHubContext<NotificationHub> hubContext, ISmsService smsService /*IRepository<AppUser, int> _userRepository*/) : ICongestionScheduleService
     {
         public async Task<CongestionScheduleDto> AddCongestionAsync(string name, string level, string? notes)
         {
@@ -41,8 +44,21 @@ namespace Services
             await unitOfWork.SaveChangeAsync();
 
             var result = mapper.Map<CongestionScheduleDto>(congestionEntity);
-            result.StationName = station.StationName; 
+            result.StationName = station.StationName;
 
+            //==================================================================
+            await hubContext.Clients.All.SendAsync("ReceiveMessage", $"New congestion {name}: {notes}");
+
+            //var users = await _userRepository.GetAllAsync();
+            //foreach (var user in users)
+            //{
+            //    if (!string.IsNullOrEmpty(user.PhoneNumber))
+            //    {
+            //        await smsService.SendSmsAsync(
+            //            user.PhoneNumber,
+         //               $"New congestion {name}: {notes}")
+            //        );
+            //    }}
             return result;
         }
 
