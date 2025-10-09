@@ -88,9 +88,9 @@ public class StationsNameServices : IStationsNameServices
         return resultDto;
     }
 
-         public async Task<IEnumerable<Station_NameDto>> GetAllStationsAsync()
+         public async Task<IEnumerable<Station_NameDto>> GetAllStationsAsync(string? LineName)
     {
-        var spec= new StationNameSpecification();
+        var spec= new StationNameSpecification(LineName);
         var stations = await unitOfWork.GetRepository<Station_Name, int>().GetAllAsync(spec);
 
         if (stations == null || !stations.Any())
