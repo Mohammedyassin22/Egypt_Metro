@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Presentation.Attributes;
 using ServicesAbstraction;
 using Shared;
 using System;
@@ -14,6 +15,7 @@ namespace Presentaion
     public class StationNameController(ISerivcesManager serivcesManager):ControllerBase
     {
         [HttpGet("GetAllStationsName")]
+        [Cache(200)]
         public async Task<IActionResult> GetAllStationsAsync(string? LineName=null)
         {
             var stations= await serivcesManager.StationNameServices.GetAllStationsAsync(LineName);

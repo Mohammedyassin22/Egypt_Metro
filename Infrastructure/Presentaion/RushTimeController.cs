@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Presentation.Attributes;
 using ServicesAbstraction;
 using Shared;
 using System;
@@ -14,6 +15,7 @@ namespace Presentaion
     public class RushTimeController(ISerivcesManager serivcesManager):ControllerBase
     {
         [HttpGet("GetAllRush")]
+        [Cache(200)]
         public async Task<IActionResult> GetAllRushTimesAsync()
         {
             var rushTimes= await serivcesManager.RushTimeServices.GetRushAllAsync();

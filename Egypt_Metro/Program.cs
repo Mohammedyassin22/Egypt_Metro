@@ -13,6 +13,7 @@ using AutoMapper;
 using Services.Twilio;
 using ServicesAbstraction.Twilio;
 using Services.Hubs;
+using Presistense.Rebository;
 
 namespace Egypt_Metro
 {
@@ -37,7 +38,7 @@ namespace Egypt_Metro
 );
             builder.Services.AddSignalR();
             
-
+            builder.Services.AddScoped<ICacheRebository,CacheRebository>();
 
             builder.Services.AddScoped<ISmsService, TwilioServices>();
 
