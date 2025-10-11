@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Services.Specifcation;
+using Domain.Exception;
 
 public class StationsNameServices : IStationsNameServices
 {
@@ -111,8 +112,8 @@ public class StationsNameServices : IStationsNameServices
             var station = await unitOfWork.GetRepository<Station_Name, int>().GetByConditionAsync(x=>x.StationName==name);
             if (station is null)
             {
-                return null;
-            }
+            throw new NotFoundStationName(name);
+        }
             var result = mapper.Map<Station_NameDto>(station);
             return result.StationName;
 

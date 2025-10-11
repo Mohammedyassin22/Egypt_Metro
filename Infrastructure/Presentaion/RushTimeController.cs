@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Presentation.Attributes;
 using ServicesAbstraction;
 using Shared;
+using Shared.ErrorModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +18,9 @@ namespace Presentaion
     {
         [HttpGet("GetAllRush")]
         [Cache(200)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorDetails))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDetails))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorDetails))]
         public async Task<IActionResult> GetAllRushTimesAsync()
         {
             var rushTimes= await serivcesManager.RushTimeServices.GetRushAllAsync();
@@ -23,6 +28,9 @@ namespace Presentaion
         }
 
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorDetails))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDetails))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorDetails))]
         public async Task<IActionResult> AddRushTimeAsync(Rush_TimeDto dto)
         {
             try
@@ -41,6 +49,9 @@ namespace Presentaion
         }
 
         [HttpGet("GetRushByName/{stationName}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorDetails))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDetails))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorDetails))]
         public async Task<IActionResult> GetRushByNameAsync (string stationName)
         {
             var result= await serivcesManager.RushTimeServices.GetRushByNameAsync(stationName);
@@ -52,6 +63,9 @@ namespace Presentaion
         }
 
         [HttpDelete("DeleteRushTime/{id}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorDetails))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDetails))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorDetails))]
         public async Task<IActionResult> DeleteRushTimeAsync(int id)
         {
             try

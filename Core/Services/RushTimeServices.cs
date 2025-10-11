@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Domain.Contracts;
 using Domain.Exception;
+using Domain.Exceptions;
 using Domain.Modules;
 using Services.Specifcation;
 using ServicesAbstraction;
@@ -106,9 +107,9 @@ namespace Services
                     r.Station_Name != null && r.Station_Name.StationName == stationName);
 
                 if (rushEntity is null)
-                    return null;
+                throw new NotFoundRushTime();
 
-                var result = mapper.Map<Rush_TimeDto>(rushEntity);
+            var result = mapper.Map<Rush_TimeDto>(rushEntity);
                 return result;
             }
 

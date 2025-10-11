@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Presentation.Attributes;
 using ServicesAbstraction;
 using Shared;
+using Shared.ErrorModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,13 +18,20 @@ namespace Presentaion
     {
         [HttpGet("GetAllStationsName")]
         [Cache(200)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorDetails))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDetails))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorDetails))]
         public async Task<IActionResult> GetAllStationsAsync(string? LineName=null)
         {
             var stations= await serivcesManager.StationNameServices.GetAllStationsAsync(LineName);
             return Ok(stations);
         }
 
+
         [HttpGet("GetStationByName/{stationName}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorDetails))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDetails))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorDetails))]
         public async Task<IActionResult> GetStationNameAsync (string stationName)
         {
             var result= await serivcesManager.StationNameServices.GetStationNameAsync(stationName);
@@ -33,7 +42,11 @@ namespace Presentaion
             return Ok(result);
         }
 
+
         [HttpPost("AddStationName")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorDetails))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDetails))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorDetails))]
         public async Task<IActionResult> AddStationNameAsync([FromBody] string stationName)
         {
             try
@@ -47,7 +60,11 @@ namespace Presentaion
             }
         }
 
+
         [HttpDelete("DeleteStationName/{id}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorDetails))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDetails))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorDetails))]
         public async Task<IActionResult> DeleteStationNameAsync(int id)
         {
             try
