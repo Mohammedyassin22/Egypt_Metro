@@ -32,5 +32,6 @@ namespace Presistense.Data
         public DbSet<Faults> Faults { get; set; }
         public DbSet<Rush_Times> Rush_Times { get; set;}
         public DbSet<CongestionSchedule> CongestionSchedules { get; set; }
+        
     }
 }
