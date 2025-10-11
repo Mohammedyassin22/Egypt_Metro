@@ -15,6 +15,7 @@ namespace ServicesAbstraction
         IStationsNameServices StationNameServices { get;  }
         IStation_CoordinatesServices Station_CoordinatesServices { get; }
         IRushTimeServices RushTimeServices { get; }
+        ICacheServices CacheServices { get; }
 
     }
 }
