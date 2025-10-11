@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using ServicesAbstraction;
 using Shared;
+using Shared.ErrorModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +16,9 @@ namespace Presentaion
     public class FaultController(ISerivcesManager serivcesManager):ControllerBase
     {
         [HttpGet("GetAllFaults")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorDetails))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDetails))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorDetails))]
         public async Task<IActionResult> GetAllFaultsAsync()
         {
             var faults= await serivcesManager.FaultService.GetAllFaultsAsync();
@@ -21,6 +26,9 @@ namespace Presentaion
         }
 
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorDetails))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDetails))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorDetails))]
         public async Task<IActionResult> AddFaultAsync(FaultDto faultDto)
         {
             try
@@ -39,6 +47,9 @@ namespace Presentaion
         }
 
         [HttpDelete("DeleteFault/{id}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorDetails))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDetails))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorDetails))]
         public async Task<IActionResult> DeleteFaultAsync(int id)
         {
             try

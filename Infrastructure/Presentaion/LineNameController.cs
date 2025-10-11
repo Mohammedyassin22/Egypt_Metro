@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using ServicesAbstraction;
 using Shared;
+using Shared.ErrorModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +16,9 @@ namespace Presentaion
     public class LineNameController(ISerivcesManager serivcesManager):ControllerBase
     {
         [HttpGet("GetAllLineNames")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorDetails))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDetails))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorDetails))]
         public async Task<IActionResult> GetAllLineNamesAsync()
         {
             var lines= await serivcesManager.LineNameServices.GetAllStationsAsync();
@@ -21,6 +26,9 @@ namespace Presentaion
         }
 
         [HttpGet("GetLineByName/{lineName}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorDetails))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDetails))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorDetails))]
         public async Task<IActionResult> GetLineNameAsync (string lineName)
         {
             var result= await serivcesManager.LineNameServices.GetLineNameAsync(lineName);
@@ -32,6 +40,9 @@ namespace Presentaion
         }
 
         [HttpPost("AddLineName")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorDetails))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDetails))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorDetails))]
         public async Task<IActionResult> AddLineNameAsync([FromBody] Line_NameDto newlineDto)
         {
             if (newlineDto == null)
@@ -49,6 +60,9 @@ namespace Presentaion
         }
 
         [HttpDelete("DeleteLineName/{id}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorDetails))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDetails))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorDetails))]
         public async Task<IActionResult> DeleteLineNameAsync(int id)
         {
             try

@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using ServicesAbstraction;
 using Shared;
+using Shared.ErrorModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +16,9 @@ namespace Presentaion
     public class CongestionScheduleController(ISerivcesManager serivcesManager):ControllerBase
     {
         [HttpGet("GetAllCongestionSchedules")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorDetails))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDetails))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorDetails))]
         public async Task<IActionResult> GetAllCongestionSchedulesAsync()
         {
             var schedules= await serivcesManager.CongestionScheduleService.GetAllCongestionAsync();
@@ -21,6 +26,9 @@ namespace Presentaion
         }
 
         [HttpPost("AddCongestionSchedule")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorDetails))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDetails))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorDetails))]
         public async Task<IActionResult> AddCongestionScheduleAsync(string name, string level, string? notes)
         {
             try
@@ -43,6 +51,9 @@ namespace Presentaion
         }
 
         [HttpDelete("DeleteCongestionSchedule/{id}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorDetails))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDetails))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorDetails))]
         public async Task<IActionResult> DeleteCongestionScheduleAsync(int id)
         {
             try

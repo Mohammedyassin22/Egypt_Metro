@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Domain.Contracts;
+using Domain.Exception;
+using Domain.Exceptions;
 using Domain.Modules;
 using Services.Specifcation;
 using ServicesAbstraction;
@@ -55,7 +57,7 @@ namespace Services
             var line = await unitOfWork.GetRepository<Line_Name, int>().GetByConditionAsync(x=>x.LineName==name);
             if(line is null)
             {
-                return null;
+                throw new NotFoundLineName(name);
             }
             var result = mapper.Map<Line_NameDto>(line);
             return result.LineName;

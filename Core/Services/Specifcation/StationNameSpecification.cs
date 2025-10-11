@@ -16,8 +16,14 @@ namespace Services.Specifcation
             AddInclude(s => s.StationsLines.Select(sl => sl.Line));
         }
 
+       
         public StationNameSpecification(string name)
             : base(s => s.StationName == name)
+        {
+            ApplyIncludes();
+        }
+        public StationNameSpecification()
+            : base(null)
         {
             ApplyIncludes();
         }
