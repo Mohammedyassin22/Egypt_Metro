@@ -9,5 +9,6 @@ namespace Domain
     public interface IDbInitializer
     {
         Task InitializeAsync();
+        Task InitializeIdentityAsync();
     }
 }
