@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ServicesAbstraction;
 using Shared;
@@ -25,6 +26,7 @@ namespace Presentaion
             return Ok(faults);
         }
 
+        [Authorize(Roles = "ViceAdmin")]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorDetails))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDetails))]
@@ -46,6 +48,7 @@ namespace Presentaion
             }
         }
 
+        [Authorize(Roles = "ViceAdmin")]
         [HttpDelete("DeleteFault/{id}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorDetails))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDetails))]

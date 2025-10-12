@@ -24,37 +24,45 @@ namespace Presistense {
             {
                 await usersDb.Database.MigrateAsync();
             }
-            if (!userManager.Users.Any())
+
+            if (!await roleManager.RoleExistsAsync("Admin"))
+                await roleManager.CreateAsync(new IdentityRole("Admin"));
+
+            if (!await roleManager.RoleExistsAsync("ViceAdmin"))
+                await roleManager.CreateAsync(new IdentityRole("ViceAdmin"));
+
+            var superAdmin = await userManager.FindByNameAsync("Admin");
+            if (superAdmin == null)
             {
-                var SuperAdmin = new AppUsers
+                superAdmin = new AppUsers
                 {
                     DisplayName = "Admin",
-                    PhoneNumber="01060512789",
-                    UserName="Admin"
+                    PhoneNumber = "01060512789",
+                    UserName = "Admin"
                 };
-                var ViceAdmin = new AppUsers
-                {
-                    DisplayName="ViceAdmin",
-                    PhoneNumber="01111128427",
-                    UserName="ViceAdmin"
-                };
-                var PasswordAdmin = "Admin700";
-                var PasswordVice = "Admin757";
-                await userManager.AddToRoleAsync(SuperAdmin, "Admin");
-                await userManager.AddToRoleAsync(ViceAdmin, "ViceAdmin");
-                await userManager.CreateAsync(SuperAdmin, PasswordAdmin);
-                await userManager.CreateAsync(ViceAdmin, PasswordVice);
+
+                var passwordAdmin = "Admin700";
+                var createResult = await userManager.CreateAsync(superAdmin, passwordAdmin);
+
+                if (createResult.Succeeded)
+                    await userManager.AddToRoleAsync(superAdmin, "Admin");
             }
-            if (!roleManager.Roles.Any())
+
+            var viceAdmin = await userManager.FindByNameAsync("ViceAdmin");
+            if (viceAdmin == null)
             {
-                await roleManager.CreateAsync(new IdentityRole()
+                viceAdmin = new AppUsers
                 {
-                    Name = "Admin",
-                });
-                await roleManager.CreateAsync(new IdentityRole()
-                {
-                    Name="ViceAdmin",
-                });
+                    DisplayName = "ViceAdmin",
+                    PhoneNumber = "01111128427",
+                    UserName = "ViceAdmin"
+                };
+
+                var passwordVice = "Admin757";
+                var createResult = await userManager.CreateAsync(viceAdmin, passwordVice);
+
+                if (createResult.Succeeded)
+                    await userManager.AddToRoleAsync(viceAdmin, "ViceAdmin");
             }
         }
     }
