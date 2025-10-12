@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ServicesAbstraction;
 using Shared.ErrorModels;
@@ -24,6 +25,7 @@ namespace Presentaion
             return Ok(prices);
         }
 
+        [Authorize(Roles = "SuperAdmin")]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorDetails))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDetails))]
@@ -45,6 +47,7 @@ namespace Presentaion
             }
         }
 
+        [Authorize(Roles = "SuperAdmin")]
         [HttpPut("UpdatePrice")]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorDetails))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDetails))]

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.Attributes;
 using ServicesAbstraction;
@@ -27,6 +28,7 @@ namespace Presentaion
             return Ok(rushTimes);
         }
 
+        [Authorize(Roles = "ViceAdmin")]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorDetails))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDetails))]
@@ -62,6 +64,7 @@ namespace Presentaion
             return Ok(result);
         }
 
+        [Authorize(Roles = "ViceAdmin")]
         [HttpDelete("DeleteRushTime/{id}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorDetails))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDetails))]

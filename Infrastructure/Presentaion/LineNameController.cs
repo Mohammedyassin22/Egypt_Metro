@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ServicesAbstraction;
 using Shared;
@@ -39,6 +40,7 @@ namespace Presentaion
             return Ok(result);
         }
 
+        [Authorize(Roles = "ViceAdmin")]
         [HttpPost("AddLineName")]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorDetails))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDetails))]
@@ -59,6 +61,7 @@ namespace Presentaion
             }
         }
 
+        [Authorize(Roles = "ViceAdmin")]
         [HttpDelete("DeleteLineName/{id}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorDetails))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDetails))]
