@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Presistense;
 using Services.Hubs;
 using ServicesAbstraction;
 using ServicesAbstraction.Twilio;
@@ -20,17 +21,19 @@ using System.Threading.Tasks;
 
 namespace Services
 {
-    public class ServicesManager(IMapper mapper, IUnitOfWork unitOfWork,IConfiguration configuration,HttpClient httpClient, IHubContext<NotificationHub> hubContext 
-        , ISmsService smsService,ICacheRebository rebository,IOptions<JWtOptions>options, SignInManager<AppUsers> signInManager, UserManager<AppUsers> userManagers,ILogger<ServicesManager> logger, IConnectionMultiplexer redis) : ISerivcesManager
+    public class ServicesManager(IMapper mapper, IUnitOfWork unitOfWork, IConfiguration configuration, HttpClient httpClient, IHubContext<NotificationHub> hubContext
+        , ISmsService smsService, ICacheRebository rebository, IOptions<JWtOptions> options, SignInManager<AppUsers> signInManager, UserManager<AppUsers> userManagers, ILogger<ServicesManager> logger, IConnectionMultiplexer redis) : ISerivcesManager
     {
-        public ITicketPricesServices TicketPricesServices { get ; }=new TicketPricesServices(unitOfWork,mapper); 
-        public IFaultService FaultService { get; }=new FaultService(mapper, unitOfWork,hubContext,smsService);
-        public ICongestionScheduleService CongestionScheduleService { get ;}= new CongestionScheduleService(mapper, unitOfWork, hubContext, smsService);
-        public ILineNameServices LineNameServices { get; }= new LineNameServices(unitOfWork,mapper);
-        public IStationsNameServices StationNameServices { get; }= new StationsNameServices(unitOfWork,mapper,httpClient,configuration);
-        public IStation_CoordinatesServices Station_CoordinatesServices { get; }= new Station_CoordinateServices(unitOfWork,mapper);
-        public IRushTimeServices RushTimeServices { get; }= new RushTimeServices(mapper,unitOfWork);
+        public ITicketPricesServices TicketPricesServices { get; } = new TicketPricesServices(unitOfWork, mapper);
+        public IFaultService FaultService { get; } = new FaultService(mapper, unitOfWork, hubContext, smsService);
+        public ICongestionScheduleService CongestionScheduleService { get; } = new CongestionScheduleService(mapper, unitOfWork, hubContext, smsService);
+        public ILineNameServices LineNameServices { get; } = new LineNameServices(unitOfWork, mapper);
+        public IStationsNameServices StationNameServices { get; } = new StationsNameServices(unitOfWork, mapper, httpClient, configuration);
+        public IStation_CoordinatesServices Station_CoordinatesServices { get; } = new Station_CoordinateServices(unitOfWork, mapper);
+        public IRushTimeServices RushTimeServices { get; } = new RushTimeServices(mapper, unitOfWork);
         public ICacheServices CacheServices { get; } = new CacheServices(rebository);
-        public IAuthServices AuthServices { get; } = new Authservice(userManagers, options, mapper, signInManager,redis,smsService,logger);
+        public IAuthServices AuthServices { get; } = new Authservice(userManagers, options, mapper, signInManager, redis, smsService, logger);
+
+        public IStationNotificationService StationNotification { get; } = new StationNotificationService(unitOfWork);
     }
 }
