@@ -17,5 +17,6 @@ namespace ServicesAbstraction
         IRushTimeServices RushTimeServices { get; }
         ICacheServices CacheServices { get; }
         IAuthServices AuthServices { get; }
+        IStationNotificationService StationNotification { get; }
     }
 }
