@@ -1,4 +1,5 @@
-﻿using Domain.Modules;
+﻿using Domain.Contracts;
+using Domain.Modules;
 using Shared;
 using System;
 using System.Collections.Generic;
@@ -10,28 +11,26 @@ namespace Services.Specifcation
 {
     public class StationNameSpecification : BaseSpecification<Station_Name, int>
     {
-        private void ApplyIncludes()
+        public StationNameSpecification(string? name)
+            : base(s => string.IsNullOrEmpty(name) || s.StationName.ToLower().Contains(name.ToLower()))
         {
+            AddInclude(s => s.Coordinates);
             AddInclude(s => s.StationsLines);
-            AddInclude(s => s.StationsLines.Select(sl => sl.Line));
         }
 
-       
-        public StationNameSpecification(string name)
-            : base(s => s.StationName == name)
-        {
-            ApplyIncludes();
-        }
         public StationNameSpecification()
             : base(null)
         {
-            ApplyIncludes();
+            AddInclude(s => s.Coordinates);
+            AddInclude(s => s.StationsLines);
         }
 
-        public StationNameSpecification(StationNameSpecificationParameter parameter): 
-            base(x => (string.IsNullOrEmpty(parameter.Search) || x.StationName.ToLower().Contains(parameter.Search.ToLower())))
+        public StationNameSpecification(StationNameSpecificationParameter parameter)
+            : base(x => string.IsNullOrEmpty(parameter.Search) || x.StationName.ToLower().Contains(parameter.Search.ToLower()))
         {
-            ApplyIncludes();
+            AddInclude(s => s.Coordinates);
+            AddInclude(s => s.StationsLines);
         }
     }
-    }
+
+}

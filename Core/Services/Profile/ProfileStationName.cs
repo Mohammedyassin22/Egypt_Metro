@@ -40,6 +40,11 @@ namespace Services.Profile
     .ForMember(dest => dest.Notes, opt => opt.MapFrom(src => src.Notes))
     .ReverseMap();
 
+            CreateMap<CongestionSchedule, CongestionScheduleDto>()
+    .ForMember(dest => dest.StationName, opt => opt.MapFrom(src => src.StationName.StationName))
+    .ForMember(dest => dest.congestionLevel, opt => opt.MapFrom(src => src.CongestionLevel.ToString()))
+    .ReverseMap();
+
         }
     }
 }

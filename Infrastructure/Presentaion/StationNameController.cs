@@ -18,7 +18,7 @@ namespace Presentaion
     public class StationNameController(ISerivcesManager serivcesManager):ControllerBase
     {
         [HttpGet("GetAllStationsName")]
-        [Cache(200)]
+       
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorDetails))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDetails))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorDetails))]
