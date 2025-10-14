@@ -21,6 +21,11 @@ namespace Services
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.Configure<JWtOptions>(configuration.GetSection("JWtOptions"));
 
+            services.AddSignalR();
+            services.AddScoped<IChatService, ChatService>();
+            services.AddScoped<IMetroService, MetroService>();
+
+
             return services;
         }
     }

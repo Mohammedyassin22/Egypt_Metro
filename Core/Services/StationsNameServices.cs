@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Services.Specifcation;
 using Domain.Exception;
+using Presistense.Rebository;
 
 public class StationsNameServices : IStationsNameServices
 {
@@ -18,12 +19,13 @@ public class StationsNameServices : IStationsNameServices
     private readonly IMapper mapper;
     private readonly HttpClient _httpClient;
     private readonly string _googleApiKey;
-
-        public StationsNameServices(IUnitOfWork unitOfWork, IMapper mapper, HttpClient httpClient, IConfiguration config)
+    private readonly ICacheRebository _cacheRebository;
+        public StationsNameServices(IUnitOfWork unitOfWork, IMapper mapper, HttpClient httpClient, IConfiguration config, ICacheRebository _cacheRebository)
     {
         this.unitOfWork = unitOfWork;
        this.mapper = mapper;
         _httpClient = httpClient;
+        this._cacheRebository = _cacheRebository;
         if (!_httpClient.DefaultRequestHeaders.Contains("User-Agent"))
         {
             _httpClient.DefaultRequestHeaders.Add("User-Agent", "EgyptMetroApp/1.0 (contact: your-email@example.com)");
@@ -89,25 +91,36 @@ public class StationsNameServices : IStationsNameServices
         return resultDto;
     }
 
-         public async Task<IEnumerable<Station_NameDto>> GetAllStationsAsync(string? LineName)
+    public async Task<IEnumerable<Station_NameDto>> GetAllStationsAsync(string? LineName)
     {
-        var spec= new StationNameSpecification(LineName);
-        var stations = await unitOfWork.GetRepository<Station_Name, int>().GetAllAsync(spec);
+        string cacheKey = string.IsNullOrEmpty(LineName) ? "stations_all" : $"stations_{LineName.ToLower()}";
+
+        var cachedData = await _cacheRebository.GetAsync(cacheKey);
+        if (!string.IsNullOrEmpty(cachedData))
+        {
+            var stationsFromCache = JsonSerializer.Deserialize<IEnumerable<Station_NameDto>>(cachedData);
+            if (stationsFromCache != null && stationsFromCache.Any())
+                return stationsFromCache;
+        }
+
+        var stationRepo = unitOfWork.GetRepository<Station_Name, int>();
+        var spec = string.IsNullOrEmpty(LineName)
+            ? new StationNameSpecification()
+            : new StationNameSpecification(LineName);
+
+        var stations = await stationRepo.GetAllAsync(spec);
 
         if (stations == null || !stations.Any())
             return Enumerable.Empty<Station_NameDto>();
 
-        var result = stations.Select(s => new Station_NameDto
-        {
-            StationName = s.StationName,
-            StationsLines = null,      
-            Coordinates = null         
-        });
+        var result = mapper.Map<IEnumerable<Station_NameDto>>(stations);
+
+        await _cacheRebository.SetAsync(cacheKey, JsonSerializer.Serialize(result), TimeSpan.FromMinutes(10));
 
         return result;
-    }
+   }
 
-         public async Task<string> GetStationNameAsync(string name)
+    public async Task<string> GetStationNameAsync(string name)
         {
             var station = await unitOfWork.GetRepository<Station_Name, int>().GetByConditionAsync(x=>x.StationName==name);
             if (station is null)

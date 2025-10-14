@@ -39,6 +39,7 @@ namespace Presistense.Rebository
         }
 
 
+
         public async Task<TEntity?> GetAsync(TKey id)
         {
             return await metroDbContex.Set<TEntity>().FindAsync(id);

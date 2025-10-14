@@ -18,5 +18,6 @@ namespace ServicesAbstraction
         ICacheServices CacheServices { get; }
         IAuthServices AuthServices { get; }
         IStationNotificationService StationNotification { get; }
+        IChatService ChatService { get; }
     }
 }

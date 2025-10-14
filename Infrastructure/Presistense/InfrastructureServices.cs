@@ -16,14 +16,17 @@ namespace Presistense
         public static IServiceCollection AddInfrastructer(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<MetroDbContex>(x =>
-                x.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
-            );
+           x.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
+       );
+
             services.AddDbContext<UsersDbContext>(x =>
             {
                 x.UseSqlServer(configuration.GetConnectionString("IdentityDefaultConnection"));
             });
+
             services.AddSingleton<IConnectionMultiplexer>(sp =>
-            ConnectionMultiplexer.Connect(configuration.GetConnectionString("RedisConnection")));
+                ConnectionMultiplexer.Connect(configuration.GetConnectionString("RedisConnection"))
+            );
 
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();

@@ -16,9 +16,9 @@ namespace Presistense
                    where TEntity : BaseEntity<TKey>
         {
             var query = inpuyquery;
-            if (spec.criterial is not null)
+            if (spec.Criteria is not null)
             {
-                query = query.Where(spec.criterial);
+                query = query.Where(spec.Criteria);
                 query = spec.Includes.Aggregate(query, (current, include) => current.Include(include));
             }
             return query;
